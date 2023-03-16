@@ -1,0 +1,173 @@
+#compdef curl
+
+# curl zsh completion
+
+local curcontext="$curcontext" state state_descr line
+typeset -A opt_args
+
+local rc=1
+
+_arguments -C -S \
+  {-Y,--speed-limit}'[RATE  Stop transfers below speed-limit for '\''speed-time'\'' secs]' \
+  {-S,--show-error}'[Show error. With -s, make curl show errors when they occur]' \
+  {-y,--speed-time}'[SECONDS  Time for trig speed-limit abort. Defaults to 30]' \
+  --ftp-alternative-to-user'[COMMAND  String to replace "USER \[name\]" (F)]' \
+  --retry-delay'[SECONDS When retrying, wait this many seconds between each]' \
+  {-E,--cert}'[CERT\[\:PASSWD\] Client certificate file and password (SSL)]' \
+  --ftp-ssl-control'[Require SSL/TLS for ftp login, clear for transfer (F)]' \
+  --proto-redir'[PROTOCOLS  Enable/disable specified protocols on redirect]' \
+  {-Q,--quote}'[CMD     Send command(s) to server before transfer (F/SFTP)]' \
+  {-c,--cookie-jar}'[FILE  Write cookies to this file after operation (H)]' \
+  --hostpubmd5'[MD5  Hex encoded MD5 string of the host public key. (SSH)]' \
+  {-p,--proxytunnel}'[Operate through a HTTP proxy tunnel (using CONNECT)]' \
+  --socks5-hostname'[HOST\[\:PORT\] SOCKS5 proxy, pass host name to proxy]' \
+  {-j,--junk-session-cookies}'[Ignore session cookies read from file (H)]' \
+  --resolve'[HOST\:PORT\:ADDRESS  Force resolve of HOST\:PORT to ADDRESS]' \
+  {-P,--ftp-port}'[ADR  Use PORT with given address instead of PASV (F)]' \
+  {-R,--remote-time}'[Set the remote file'\''s time on the local output]' \
+  --location-trusted'[like --location and send auth to other hosts (H)]' \
+  {-x,--proxy}'[\[PROTOCOL\://\]HOST\[\:PORT\] Use proxy on given port]' \
+  {-b,--cookie}'[STRING/FILE  String or file to read cookies from (H)]' \
+  {-O,--remote-name}'[Write output to a file named as the remote file]' \
+  --socks5-gssapi-service'[NAME  SOCKS5 proxy service name for gssapi]' \
+  {-g,--globoff}'[Disable URL sequences and ranges using {} and \[\]]' \
+  --krb'[LEVEL     Enable Kerberos with specified security level (F)]' \
+  --libcurl'[FILE  Dump libcurl equivalent code of this command line]' \
+  --post301'[Do not switch to GET after following a 301 redirect (H)]' \
+  --post302'[Do not switch to GET after following a 302 redirect (H)]' \
+  --post303'[Do not switch to GET after following a 303 redirect (H)]' \
+  --retry'[NUM   Retry request NUM times if transient problems occur]' \
+  --compressed'[Request compressed response (using deflate or gzip)]' \
+  --crlfile'[FILE  Get a CRL list in PEM format from the given file]' \
+  {-k,--insecure}'[Allow connections to SSL sites without certs (H)]' \
+  --engine'[ENGINGE  Crypto engine (SSL). "--engine list" for list]' \
+  {-f,--fail}'[Fail silently (no output at all) on HTTP errors (H)]' \
+  --ftp-method'[\[MULTICWD/NOCWD/SINGLECWD\] Control CWD usage (F)]' \
+  --interface'[INTERFACE  Specify network interface/address to use]' \
+  {-#,--progress-bar}'[Display transfer progress as a progress bar]' \
+  --proxy-negotiate'[Use Negotiate authentication on the proxy (H)]' \
+  --socks5-basic'[Enable username/password auth for SOCKS5 proxies]' \
+  --connect-timeout'[SECONDS  Maximum time allowed for connection]' \
+  {-m,--max-time}'[SECONDS  Maximum time allowed for the transfer]' \
+  {-J,--remote-header-name}'[Use the header-provided filename (H)]' \
+  --ssl-allow-beast'[Allow security flaw to improve interop (SSL)]' \
+  --ignore-content-length'[Ignore the HTTP Content-Length header]' \
+  {-o,--output}'[FILE   Write output to <file> instead of stdout]' \
+  {-U,--proxy-user}'[USER\[\:PASSWORD\]  Proxy user and password]' \
+  --unix-socket'[FILE    Connect through this UNIX domain socket]' \
+  --socks4a'[HOST\[\:PORT\]  SOCKS4a proxy on given host + port]' \
+  --tftp-blksize'[VALUE  Set TFTP BLKSIZE option (must be >512)]' \
+  {-a,--append}'[Append to target file when uploading (F/SFTP)]' \
+  --cacert'[FILE   CA certificate to verify peer against (SSL)]' \
+  --ftp-create-dirs'[Create the remote dirs if not present (F)]' \
+  {-i,--include}'[Include protocol headers in the output (H/F)]' \
+  --keepalive-time'[SECONDS  Interval between keepalive probes]' \
+  --proxy1.0'[HOST\[\:PORT\]  Use HTTP/1.0 proxy on given port]' \
+  --random-file'[FILE  File for reading random data from (SSL)]' \
+  {-r,--range}'[RANGE   Retrieve only the bytes within a range]' \
+  --trace-ascii'[FILE  Like --trace but without the hex output]' \
+  --tlsauthtype'[STRING  TLS authentication type (default SRP)]' \
+  --cert-type'[TYPE Certificate file type (DER/PEM/ENG) (SSL)]' \
+  --form-string'[STRING  Specify HTTP multipart POST data (H)]' \
+  --mail-auth'[AUTH  Originator address of the original email]' \
+  --proxy-anyauth'[Pick "any" proxy authentication method (H)]' \
+  --socks4'[HOST\[\:PORT\]  SOCKS4 proxy on given host + port]' \
+  --socks5'[HOST\[\:PORT\]  SOCKS5 proxy on given host + port]' \
+  {-A,--user-agent}'[STRING  User-Agent to send to server (H)]' \
+  --capath'[DIR    CA directory to verify peer against (SSL)]' \
+  {-F,--form}'[CONTENT  Specify HTTP multipart POST data (H)]' \
+  --key-type'[TYPE Private key file type (DER/PEM/ENG) (SSL)]' \
+  --local-port'[RANGE  Force use of these local port numbers]' \
+  --max-filesize'[BYTES  Maximum file size to download (H/F)]' \
+  --max-redirs'[NUM  Maximum number of redirects allowed (H)]' \
+  --pass'[PASS     Pass phrase for the private key (SSL/SSH)]' \
+  --proxy-digest'[Use Digest authentication on the proxy (H)]' \
+  {-z,--time-cond}'[TIME  Transfer based on a time condition]' \
+  --create-dirs'[Create necessary local directory hierarchy]' \
+  {-H,--header}'[LINE   Custom header to pass to server (H)]' \
+  {-l,--list-only}'[List only names of an FTP directory (F)]' \
+  {-n,--netrc}'[Must read .netrc for user name and password]' \
+  --socks5-gssapi-nec'[Compatibility with NEC SOCKS5 server]' \
+  --stderr'[FILE   Where to redirect stderr. - means stdout]' \
+  {-u,--user}'[USER\[\:PASSWORD\]  Server user and password]' \
+  {-w,--write-out}'[FORMAT  What to output after completion]' \
+  {-D,--dump-header}'[FILE  Write the headers to this file]' \
+  --netrc-optional'[Use either .netrc or URL; overrides -n]' \
+  {-N,--no-buffer}'[Disable buffering of the output stream]' \
+  --proxy-basic'[Use Basic authentication on the proxy (H)]' \
+  --remote-name-all'[Use the remote file name for all URLs]' \
+  --retry-max-time'[SECONDS  Retry only within this period]' \
+  {-K,--config}'[FILE   Specify which config file to read]' \
+  --egd-file'[FILE  EGD socket path for random data (SSL)]' \
+  --no-keepalive'[Disable keepalive use on the connection]' \
+  --raw'[Do HTTP "raw", without any transfer decoding (H)]' \
+  {-X,--request}'[COMMAND  Specify request command to use]' \
+  --socks5-gssapi'[Enable GSS-API auth for SOCKS5 proxies]' \
+  --tr-encoding'[Request compressed transfer encoding (H)]' \
+  --data-urlencode'[DATA  HTTP POST data url encoded (H)]' \
+  --proto'[PROTOCOLS  Enable/disable specified protocols]' \
+  --proxy-ntlm'[Use NTLM authentication on the proxy (H)]' \
+  --trace'[FILE    Write a debug trace to the given file]' \
+  {-T,--upload-file}'[FILE  Transfer FILE to destination]' \
+  --limit-rate'[RATE  Limit transfer speed to this rate]' \
+  --trace-time'[Add time stamps to trace/verbose output]' \
+  --ftp-skip-pasv-ip'[Skip the IP address for PASV (F)]' \
+  --ftp-ssl-ccc-mode'[ACTIVE/PASSIVE  Set CCC mode (F)]' \
+  --netrc-file'[FILE  Set up the netrc filename to use]' \
+  --no-sessionid'[Disable SSL session-ID reusing (SSL)]' \
+  {-s,--silent}'[Silent mode. Don'\''t output anything]' \
+  {-C,--continue-at}'[OFFSET  Resumed transfer offset]' \
+  --metalink'[Process given URLs as metalink XML file]' \
+  --ssl-reqd'[Require SSL/TLS (FTP, IMAP, POP3, SMTP)]' \
+  --xattr'[Store metadata in extended file attributes]' \
+  --delegation'[STRING GSS-API delegation permission]' \
+  --ftp-pret'[Send PRET before PASV (for drftpd) (F)]' \
+  --negotiate'[Use HTTP Negotiate Authentication (H)]' \
+  {-v,--verbose}'[Make the operation more talkative]' \
+  --ftp-ssl-ccc'[Send CCC after authenticating (F)]' \
+  {-G,--get}'[Send the -d data with a HTTP GET (H)]' \
+  --key'[KEY       Private key file name (SSL/SSH)]' \
+  --anyauth'[Pick "any" authentication method (H)]' \
+  --noproxy'[List of hosts which do not use proxy]' \
+  --tls-max'[VERSION  Use TLS up to VERSION (SSL)]' \
+  --data-binary'[DATA  HTTP POST binary data (H)]' \
+  --disable-eprt'[Inhibit using EPRT or LPRT (F)]' \
+  --ftp-pasv'[Use PASV/EPSV instead of PORT (F)]' \
+  --data-ascii'[DATA  HTTP POST ASCII data (H)]' \
+  --digest'[Use HTTP Digest Authentication (H)]' \
+  --ftp-account'[DATA  Account data string (F)]' \
+  {-V,--version}'[Show version number and quit]' \
+  --pubkey'[KEY    Public key file name (SSH)]' \
+  --basic'[Use HTTP Basic Authentication (H)]' \
+  --ssl'[Try SSL/TLS (FTP, IMAP, POP3, SMTP)]' \
+  --ciphers'[LIST  SSL ciphers to use (SSL)]' \
+  {-4,--ipv4}'[Resolve name to IPv4 address]' \
+  {-6,--ipv6}'[Resolve name to IPv6 address]' \
+  --mail-from'[FROM  Mail from this address]' \
+  --mail-rcpt'[TO  Mail to this receiver(s)]' \
+  --tcp-nodelay'[Use the TCP_NODELAY option]' \
+  {-B,--use-ascii}'[Use ASCII/text transfer]' \
+  {-d,--data}'[DATA     HTTP POST data (H)]' \
+  --ntlm'[Use HTTP NTLM authentication (H)]' \
+  --disable-epsv'[Inhibit using EPSV (F)]' \
+  {-M,--manual}'[Display the full manual]' \
+  {-L,--location}'[Follow redirects (H)]' \
+  --crlf'[Convert LF to CRLF in upload]' \
+  {-I,--head}'[Show document info only]' \
+  --tlspassword'[STRING TLS password]' \
+  --url'[URL       URL to work with]' \
+  {-0,--http1.0}'[Use HTTP 1.0 (H)]' \
+  {-e,--referer}'[Referer URL (H)]' \
+  {-2,--sslv2}'[Use SSLv2 (SSL)]' \
+  {-3,--sslv3}'[Use SSLv3 (SSL)]' \
+  --tlsuser'[USER  TLS username]' \
+  --tlsv1.0'[Use TLSv1.0 (SSL)]' \
+  --tlsv1.1'[Use TLSv1.1 (SSL)]' \
+  --tlsv1.2'[Use TLSv1.2 (SSL)]' \
+  --tlsv1.3'[Use TLSv1.3 (SSL)]' \
+  {-h,--help}'[This help text]' \
+  {-t,--telnet-option}'[OPT=VAL  Set telnet option]' \
+  {-1,--tlsv1}'[Use => TLSv1 (SSL)]' \
+  '*:URL:_urls' && rc=0
+
+return rc
